@@ -60,7 +60,7 @@ func handle(w http.ResponseWriter, id, method string, rheader http.Header) {
 		}
 		return
 	}
-	w.WriteHeader(resp.StatusCode)
+
 	for k, vs := range resp.Header {
 		if strings.ToLower(k) == "host" {
 			continue
@@ -73,5 +73,7 @@ func handle(w http.ResponseWriter, id, method string, rheader http.Header) {
 	if method == "HEAD" {
 		return
 	}
+
+	w.WriteHeader(resp.StatusCode)
 	_, _ = io.Copy(w, resp.Body)
 }
