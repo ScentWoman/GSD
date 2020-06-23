@@ -36,6 +36,7 @@ func HandleFunc(pattern, credentialsFile, tokenFile string) {
 		if paths[0] == "" {
 			paths = paths[1:]
 		}
+
 		handle(w, paths[0], r.Method, r.Header)
 	})
 }
@@ -59,6 +60,7 @@ func handle(w http.ResponseWriter, id, method string, rheader http.Header) {
 		}
 		return
 	}
+	w.WriteHeader(resp.StatusCode)
 	for k, vs := range resp.Header {
 		if strings.ToLower(k) == "host" {
 			continue
@@ -71,6 +73,5 @@ func handle(w http.ResponseWriter, id, method string, rheader http.Header) {
 	if method == "HEAD" {
 		return
 	}
-
 	_, _ = io.Copy(w, resp.Body)
 }
