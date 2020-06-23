@@ -8,6 +8,15 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
+var (
+	blacklistedHeaders = make(map[string]bool)
+)
+
+func init() {
+	blacklistedHeaders["host"] = true
+	blacklistedHeaders["accept-encoding"] = true
+}
+
 // HandleFunc initiates srv and serves.
 func HandleFunc(pattern, credentialsFile, tokenFile string) {
 	initSrv(credentialsFile, tokenFile)
@@ -34,7 +43,7 @@ func HandleFunc(pattern, credentialsFile, tokenFile string) {
 func handle(w http.ResponseWriter, id, method string, rheader http.Header) {
 	fileCall := srv.Files.Get(id).SupportsAllDrives(true)
 	for k, vs := range rheader {
-		if strings.ToLower(k) == "host" {
+		if blacklistedHeaders[strings.ToLower(k)] {
 			continue
 		}
 		for _, v := range vs {
